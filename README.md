@@ -256,3 +256,11 @@ Open your browser at `http://localhost:5173`.
 3. Add Environment Variable:
    - `VITE_API_URL`: `https://support-crm-api.onrender.com/api` (your deployed backend URL)
 4. Click **Deploy**. Your app is now live.
+
+---
+
+## Detailed Step-by-Step Guide
+
+For detailed walkthroughs on setting up MongoDB Atlas IP access, linking GitHub, deploying to Render and Vercel with screenshots, and troubleshooting production smoke tests, see:
+**[DEPLOYMENT.md](DEPLOYMENT.md)**
+
