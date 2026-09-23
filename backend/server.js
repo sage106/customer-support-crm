@@ -20,21 +20,27 @@ app.use((req, res, next) => {
 // Connect to MongoDB
 connectDB();
 
-// API Routes
+// Support both /api/tickets and /tickets for flexible deployment
 app.use("/api/tickets", ticketRoutes);
+app.use("/tickets", ticketRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+    res.status(200).json({
+        status: "ok",
+        service: "Customer Support CRM API",
+        timestamp: new Date().toISOString()
+    });
 });
 
 // Root welcome
 app.get("/", (req, res) => {
-    res.send("Customer Support CRM API is running!");
+    res.status(200).send("Customer Support CRM API is running successfully!");
 });
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+// Bind to 0.0.0.0 for cloud providers like Render / Railway
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
 });

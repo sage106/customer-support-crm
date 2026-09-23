@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import TicketForm from "./TicketForm";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE = rawApiUrl.replace(/\/+$/, "");
 
 function App() {
     const [tickets, setTickets] = useState([]);
