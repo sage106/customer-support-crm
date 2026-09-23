@@ -32,7 +32,6 @@ function App() {
             const data = await response.json();
             setTickets(data);
 
-            // If a ticket is currently selected in detail view, update its data
             if (selectedTicket) {
                 const updatedSelected = data.find(
                     (t) => (t._id && t._id === selectedTicket._id) || (t.ticketId && t.ticketId === selectedTicket.ticketId)
@@ -41,7 +40,7 @@ function App() {
             }
         } catch (error) {
             console.error("Error fetching tickets:", error);
-            showToast("Failed to load tickets. Is backend running?", "error");
+            showToast("Failed to load tickets. Backend service unreachable.", "error");
         } finally {
             if (!silent) setLoading(false);
         }
@@ -61,7 +60,7 @@ function App() {
             });
 
             if (!response.ok) throw new Error("Status update failed");
-            const result = await response.json();
+            await response.json();
 
             showToast(`Status updated to ${newStatus}`);
             fetchTickets(true);
@@ -123,7 +122,7 @@ function App() {
             fetchTickets(true);
         } catch (error) {
             console.error("Error adding note:", error);
-            showToast("Failed to add note", "error");
+            showToast("Failed to record note", "error");
         } finally {
             setAddingNote(false);
         }
@@ -158,11 +157,11 @@ function App() {
             });
             if (!response.ok) throw new Error("Seeding failed");
             const data = await response.json();
-            showToast(data.message || "Sample tickets loaded!");
+            showToast(data.message || "Sample tickets populated");
             fetchTickets();
         } catch (error) {
             console.error("Error seeding tickets:", error);
-            showToast("Could not seed data", "error");
+            showToast("Could not populate sample data", "error");
         } finally {
             setSeeding(false);
         }
@@ -226,7 +225,17 @@ function App() {
             {/* Toast Notification Alert */}
             {toast && (
                 <div className={`toast-notification ${toast.type}`}>
-                    <span>{toast.type === "error" ? "❌" : "✅"}</span>
+                    {toast.type === "error" ? (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                    ) : (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    )}
                     <span>{toast.message}</span>
                 </div>
             )}
@@ -234,10 +243,18 @@ function App() {
             {/* Navigation Header */}
             <header className="crm-header">
                 <div className="brand-group">
-                    <div className="brand-icon">🎫</div>
+                    <div className="brand-logo-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
                     <div>
-                        <h1 className="brand-title">Support Desk CRM</h1>
-                        <p className="brand-sub">Customer Tickets & Incident Management</p>
+                        <h1 className="brand-title">Customer Support CRM</h1>
+                        <p className="brand-sub">Ticket Operations & SLA Triage Desk</p>
                     </div>
                 </div>
 
@@ -246,12 +263,15 @@ function App() {
                         className="btn btn-outline"
                         onClick={handleSeedData}
                         disabled={seeding}
-                        title="Add 5 sample tickets for testing"
                     >
-                        {seeding ? "Loading..." : "⚡ Load Demo Data"}
+                        {seeding ? "Populating..." : "Populate Demo Data"}
                     </button>
                     <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-                        + New Ticket
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        <span>New Ticket</span>
                     </button>
                 </div>
             </header>
@@ -261,7 +281,7 @@ function App() {
                 <TicketForm
                     onClose={() => setShowForm(false)}
                     onTicketCreated={(newTicket) => {
-                        showToast(`Ticket ${newTicket.ticketId || ""} created successfully!`);
+                        showToast(`Ticket ${newTicket.ticketId || ""} created successfully`);
                         fetchTickets();
                     }}
                 />
@@ -274,7 +294,11 @@ function App() {
                 <div className="ticket-detail-view">
                     <div className="detail-top-nav">
                         <button className="btn btn-outline" onClick={() => setSelectedTicket(null)}>
-                            ← Back to Tickets
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            <span>Back to All Tickets</span>
                         </button>
 
                         <div className="detail-nav-actions">
@@ -285,7 +309,11 @@ function App() {
                                 className="btn btn-danger-outline"
                                 onClick={() => handleDeleteTicket(selectedTicket._id)}
                             >
-                                🗑️ Delete Ticket
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                <span>Delete Ticket</span>
                             </button>
                         </div>
                     </div>
@@ -298,10 +326,11 @@ function App() {
                                     <h2 className="detail-subject">{selectedTicket.subject}</h2>
                                     <div className="detail-badges">
                                         <span className={`badge-pill badge-${getCleanStatus(selectedTicket.status).toLowerCase().replace(/\s+/g, "-")}`}>
+                                            <span className="status-dot"></span>
                                             {getCleanStatus(selectedTicket.status)}
                                         </span>
                                         <span className={`badge-priority badge-p-${(selectedTicket.priority || "Medium").toLowerCase()}`}>
-                                            {(selectedTicket.priority || "Medium")} Priority
+                                            {selectedTicket.priority || "Medium"} Priority
                                         </span>
                                     </div>
                                 </div>
@@ -313,11 +342,11 @@ function App() {
 
                                 <div className="detail-meta-grid">
                                     <div>
-                                        <span className="meta-label">Submitted On</span>
+                                        <span className="meta-label">Submitted</span>
                                         <p className="meta-val">{formatDate(selectedTicket.createdAt)}</p>
                                     </div>
                                     <div>
-                                        <span className="meta-label">Last Activity</span>
+                                        <span className="meta-label">Last Modified</span>
                                         <p className="meta-val">{formatDate(selectedTicket.updatedAt)}</p>
                                     </div>
                                 </div>
@@ -326,9 +355,12 @@ function App() {
                             {/* Internal Notes / Agent Collaboration Thread */}
                             <div className="detail-card notes-section">
                                 <div className="notes-header">
-                                    <h3>💬 Internal Activity & Notes</h3>
+                                    <div>
+                                        <h3>Internal Activity & Notes</h3>
+                                        <p className="notes-sub">Team collaboration and incident timeline</p>
+                                    </div>
                                     <span className="notes-count">
-                                        {(selectedTicket.notes && selectedTicket.notes.length) || 0} notes
+                                        {(selectedTicket.notes && selectedTicket.notes.length) || 0} entries
                                     </span>
                                 </div>
 
@@ -337,7 +369,7 @@ function App() {
                                         selectedTicket.notes.map((note, idx) => (
                                             <div className="note-card" key={note._id || idx}>
                                                 <div className="note-meta">
-                                                    <span className="note-author">👤 {note.author || "Support Agent"}</span>
+                                                    <span className="note-author">{note.author || "Support Agent"}</span>
                                                     <span className="note-time">{formatDate(note.createdAt)}</span>
                                                 </div>
                                                 <p className="note-text">{note.noteText}</p>
@@ -345,31 +377,31 @@ function App() {
                                         ))
                                     ) : (
                                         <p className="empty-notes-hint">
-                                            No internal notes recorded yet. Add an update or troubleshooting step below.
+                                            No internal activity logged yet. Add troubleshooting notes or status remarks below.
                                         </p>
                                     )}
                                 </div>
 
                                 <form onSubmit={handleAddNote} className="add-note-form">
                                     <div className="note-author-input">
-                                        <label>Logged By:</label>
+                                        <label>Author:</label>
                                         <input
                                             type="text"
                                             value={noteAuthor}
                                             onChange={(e) => setNoteAuthor(e.target.value)}
-                                            placeholder="Your Name / Team"
+                                            placeholder="Agent Name or Role"
                                         />
                                     </div>
                                     <textarea
                                         rows={3}
-                                        placeholder="Add an internal progress note, debugging findings, or customer response..."
+                                        placeholder="Add an internal progress note or resolution detail..."
                                         value={newNoteText}
                                         onChange={(e) => setNewNoteText(e.target.value)}
                                         required
                                     ></textarea>
                                     <div className="note-form-actions">
                                         <button type="submit" className="btn btn-primary" disabled={addingNote}>
-                                            {addingNote ? "Adding Note..." : "Post Internal Note"}
+                                            {addingNote ? "Saving..." : "Add Internal Note"}
                                         </button>
                                     </div>
                                 </form>
@@ -382,22 +414,22 @@ function App() {
                                 <h3>Quick Actions</h3>
 
                                 <div className="sidebar-field">
-                                    <label>Ticket Status</label>
+                                    <label>Status</label>
                                     <select
-                                        className="form-select status-changer"
+                                        className="form-select"
                                         value={getCleanStatus(selectedTicket.status)}
                                         onChange={(e) =>
                                             updateTicketStatus(selectedTicket._id, e.target.value)
                                         }
                                     >
-                                        <option value="Open">🟡 Open</option>
-                                        <option value="In Progress">🔵 In Progress</option>
-                                        <option value="Closed">🟢 Closed</option>
+                                        <option value="Open">Open</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Closed">Closed</option>
                                     </select>
                                 </div>
 
                                 <div className="sidebar-field">
-                                    <label>Urgency Priority</label>
+                                    <label>Priority</label>
                                     <select
                                         className="form-select"
                                         value={selectedTicket.priority || "Medium"}
@@ -414,7 +446,7 @@ function App() {
                             </div>
 
                             <div className="sidebar-card">
-                                <h3>Customer Profile</h3>
+                                <h3>Customer Information</h3>
                                 <div className="customer-info-box">
                                     <div className="customer-avatar">
                                         {selectedTicket.customerName ? selectedTicket.customerName.charAt(0).toUpperCase() : "C"}
@@ -422,7 +454,7 @@ function App() {
                                     <div>
                                         <p className="cust-name">{selectedTicket.customerName}</p>
                                         <a href={`mailto:${selectedTicket.customerEmail}`} className="cust-email">
-                                            ✉️ {selectedTicket.customerEmail}
+                                            {selectedTicket.customerEmail}
                                         </a>
                                     </div>
                                 </div>
@@ -440,79 +472,81 @@ function App() {
                         <div
                             className={`kpi-card ${statusFilter === "all" ? "active-kpi" : ""}`}
                             onClick={() => setStatusFilter("all")}
-                            title="Click to view all tickets"
                         >
                             <div className="kpi-info">
-                                <span className="kpi-label">Total Tickets</span>
+                                <span className="kpi-label">All Tickets</span>
                                 <span className="kpi-num">{totalCount}</span>
                             </div>
-                            <span className="kpi-icon">📋</span>
+                            <div className="kpi-pill-indicator">Total</div>
                         </div>
 
                         <div
                             className={`kpi-card ${statusFilter === "Open" ? "active-kpi" : ""}`}
                             onClick={() => setStatusFilter(statusFilter === "Open" ? "all" : "Open")}
-                            title="Click to filter Open tickets"
                         >
                             <div className="kpi-info">
                                 <span className="kpi-label">Open</span>
                                 <span className="kpi-num color-open">{openCount}</span>
                             </div>
-                            <span className="kpi-icon">🟡</span>
+                            <div className="kpi-pill-indicator indicator-open">Pending</div>
                         </div>
 
                         <div
                             className={`kpi-card ${statusFilter === "In Progress" ? "active-kpi" : ""}`}
                             onClick={() => setStatusFilter(statusFilter === "In Progress" ? "all" : "In Progress")}
-                            title="Click to filter In Progress tickets"
                         >
                             <div className="kpi-info">
                                 <span className="kpi-label">In Progress</span>
                                 <span className="kpi-num color-progress">{inProgressCount}</span>
                             </div>
-                            <span className="kpi-icon">🔵</span>
+                            <div className="kpi-pill-indicator indicator-progress">Active</div>
                         </div>
 
                         <div
                             className={`kpi-card ${statusFilter === "Closed" ? "active-kpi" : ""}`}
                             onClick={() => setStatusFilter(statusFilter === "Closed" ? "all" : "Closed")}
-                            title="Click to filter Closed tickets"
                         >
                             <div className="kpi-info">
                                 <span className="kpi-label">Closed</span>
                                 <span className="kpi-num color-closed">{closedCount}</span>
                             </div>
-                            <span className="kpi-icon">🟢</span>
+                            <div className="kpi-pill-indicator indicator-closed">Resolved</div>
                         </div>
                     </section>
 
                     {/* Filter and Search Controls */}
                     <section className="controls-bar">
                         <div className="search-wrap">
-                            <span className="search-icon">🔍</span>
+                            <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
                             <input
                                 type="text"
                                 className="search-input"
-                                placeholder="Search by ticket ID, subject, customer, email, or description..."
+                                placeholder="Search by ID, customer name, email, subject, or keywords..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                             {searchTerm && (
-                                <button className="clear-search-btn" onClick={() => setSearchTerm("")}>
-                                    ✕
+                                <button className="clear-search-btn" onClick={() => setSearchTerm("")} aria-label="Clear search">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
                                 </button>
                             )}
                         </div>
 
                         <div className="dropdown-filters">
                             <div className="filter-group">
-                                <label>Status:</label>
+                                <label>Status</label>
                                 <select
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
                                     className="filter-select"
                                 >
-                                    <option value="all">All Statuses</option>
+                                    <option value="all">All</option>
                                     <option value="Open">Open</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Closed">Closed</option>
@@ -520,13 +554,13 @@ function App() {
                             </div>
 
                             <div className="filter-group">
-                                <label>Priority:</label>
+                                <label>Priority</label>
                                 <select
                                     value={priorityFilter}
                                     onChange={(e) => setPriorityFilter(e.target.value)}
                                     className="filter-select"
                                 >
-                                    <option value="all">All Priorities</option>
+                                    <option value="all">All</option>
                                     <option value="Urgent">Urgent</option>
                                     <option value="High">High</option>
                                     <option value="Medium">Medium</option>
@@ -536,12 +570,11 @@ function App() {
                         </div>
                     </section>
 
-                    {/* Ticket List / Table */}
+                    {/* Ticket List Section */}
                     <section className="tickets-container">
                         <div className="tickets-section-header">
                             <h2>
-                                Support Tickets{" "}
-                                <span className="result-badge">({filteredTickets.length})</span>
+                                Tickets <span className="result-badge">({filteredTickets.length})</span>
                             </h2>
                             {(searchTerm || statusFilter !== "all" || priorityFilter !== "all") && (
                                 <button
@@ -552,7 +585,7 @@ function App() {
                                         setPriorityFilter("all");
                                     }}
                                 >
-                                    Reset Filters
+                                    Clear Filters
                                 </button>
                             )}
                         </div>
@@ -560,24 +593,29 @@ function App() {
                         {loading ? (
                             <div className="loading-state">
                                 <div className="spinner"></div>
-                                <p>Loading tickets from database...</p>
+                                <p>Connecting to database...</p>
                             </div>
                         ) : filteredTickets.length === 0 ? (
                             <div className="empty-state">
-                                <span className="empty-icon">📂</span>
-                                <h3>No tickets found</h3>
+                                <div className="empty-icon-wrap">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                    </svg>
+                                </div>
+                                <h3>No matching tickets</h3>
                                 <p>
                                     {searchTerm || statusFilter !== "all" || priorityFilter !== "all"
-                                        ? "Try adjusting your search terms or filters."
-                                        : "Get started by creating your first customer support ticket or loading demo data."}
+                                        ? "No tickets match your active filter criteria."
+                                        : "Create your first support ticket or populate sample data to begin."}
                                 </p>
                                 {tickets.length === 0 && (
                                     <div className="empty-state-actions">
                                         <button className="btn btn-outline" onClick={handleSeedData}>
-                                            Load Sample Tickets
+                                            Populate Sample Data
                                         </button>
                                         <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-                                            + Create Ticket
+                                            Create Ticket
                                         </button>
                                     </div>
                                 )}
@@ -619,14 +657,12 @@ function App() {
                                                 className="ticket-row-right"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
-                                                {/* Priority badge */}
                                                 <span
                                                     className={`badge-priority badge-p-${(ticket.priority || "Medium").toLowerCase()}`}
                                                 >
                                                     {ticket.priority || "Medium"}
                                                 </span>
 
-                                                {/* Status dropdown selector */}
                                                 <select
                                                     className={`status-select-pill status-${cleanStatus.toLowerCase().replace(/\s+/g, "-")}`}
                                                     value={cleanStatus}
@@ -639,7 +675,9 @@ function App() {
                                                     <option value="Closed">Closed</option>
                                                 </select>
 
-                                                <span className="row-arrow">→</span>
+                                                <svg className="row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                                </svg>
                                             </div>
                                         </div>
                                     );

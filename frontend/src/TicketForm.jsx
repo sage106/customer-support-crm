@@ -16,7 +16,7 @@ function TicketForm({ onClose, onTicketCreated }) {
         setErrorMsg("");
 
         if (!customerName.trim() || !customerEmail.trim() || !subject.trim() || !description.trim()) {
-            setErrorMsg("Please fill in all required fields.");
+            setErrorMsg("All required fields must be completed.");
             return;
         }
 
@@ -49,7 +49,7 @@ function TicketForm({ onClose, onTicketCreated }) {
             onClose();
         } catch (error) {
             console.error("Error creating ticket:", error);
-            setErrorMsg(error.message || "Network error. Please make sure the backend server is running.");
+            setErrorMsg(error.message || "Service unavailable. Verify backend connection.");
         } finally {
             setSubmitting(false);
         }
@@ -60,20 +60,25 @@ function TicketForm({ onClose, onTicketCreated }) {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <div className="modal-title-wrap">
-                        <span className="modal-icon">🎫</span>
-                        <div>
-                            <h2>Create New Support Ticket</h2>
-                            <p className="modal-subtitle">Log an incoming customer inquiry or support incident</p>
-                        </div>
+                        <h2>New Support Ticket</h2>
+                        <p className="modal-subtitle">Log a new customer request or operational issue</p>
                     </div>
-                    <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-                        ✕
+                    <button className="modal-close-btn" onClick={onClose} aria-label="Close dialog">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                     </button>
                 </div>
 
                 {errorMsg && (
                     <div className="error-alert">
-                        <span>⚠️</span> {errorMsg}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span>{errorMsg}</span>
                     </div>
                 )}
 
@@ -86,7 +91,7 @@ function TicketForm({ onClose, onTicketCreated }) {
                             <input
                                 id="customerName"
                                 type="text"
-                                placeholder="e.g. Jane Doe"
+                                placeholder="Full Name"
                                 value={customerName}
                                 onChange={(e) => setCustomerName(e.target.value)}
                                 required
@@ -95,12 +100,12 @@ function TicketForm({ onClose, onTicketCreated }) {
 
                         <div className="form-group flex-1">
                             <label htmlFor="customerEmail">
-                                Customer Email <span className="required-star">*</span>
+                                Email Address <span className="required-star">*</span>
                             </label>
                             <input
                                 id="customerEmail"
                                 type="email"
-                                placeholder="e.g. jane@company.com"
+                                placeholder="name@domain.com"
                                 value={customerEmail}
                                 onChange={(e) => setCustomerEmail(e.target.value)}
                                 required
@@ -111,12 +116,12 @@ function TicketForm({ onClose, onTicketCreated }) {
                     <div className="form-row">
                         <div className="form-group flex-2">
                             <label htmlFor="subject">
-                                Subject / Issue Title <span className="required-star">*</span>
+                                Subject <span className="required-star">*</span>
                             </label>
                             <input
                                 id="subject"
                                 type="text"
-                                placeholder="e.g. Payment webhook failing on production"
+                                placeholder="Brief summary of the issue"
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
                                 required
@@ -124,29 +129,29 @@ function TicketForm({ onClose, onTicketCreated }) {
                         </div>
 
                         <div className="form-group flex-1">
-                            <label htmlFor="priority">Priority Level</label>
+                            <label htmlFor="priority">Priority</label>
                             <select
                                 id="priority"
                                 value={priority}
                                 onChange={(e) => setPriority(e.target.value)}
-                                className={`priority-select priority-${priority.toLowerCase()}`}
+                                className="form-select"
                             >
-                                <option value="Low">🟢 Low</option>
-                                <option value="Medium">🔵 Medium</option>
-                                <option value="High">🟠 High</option>
-                                <option value="Urgent">🔴 Urgent</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
                             </select>
                         </div>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="description">
-                            Issue Description <span className="required-star">*</span>
+                            Description <span className="required-star">*</span>
                         </label>
                         <textarea
                             id="description"
                             rows={4}
-                            placeholder="Provide details about the issue, steps to reproduce, or relevant context..."
+                            placeholder="Detailed explanation, reproduction steps, or context..."
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             required
@@ -158,7 +163,7 @@ function TicketForm({ onClose, onTicketCreated }) {
                             Cancel
                         </button>
                         <button type="submit" className="btn btn-primary" disabled={submitting}>
-                            {submitting ? "Creating..." : "Create Ticket"}
+                            {submitting ? "Submitting..." : "Create Ticket"}
                         </button>
                     </div>
                 </form>

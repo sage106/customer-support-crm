@@ -1,23 +1,23 @@
-# 🎫 Support Desk CRM — Customer Support Ticketing System
+# Customer Support Ticketing CRM System
 
-A production-ready, full-stack Customer Support Management System built with the **MERN stack** (MongoDB, Express, React, Node.js). Designed to help customer support teams triage, search, update, and collaborate on customer issues with real-time feedback.
+A full-stack Customer Support Management System built with the MERN stack (MongoDB, Express.js, React, Node.js). Designed to help customer support teams triage, search, update, and collaborate on customer issues with real-time feedback and SLA urgency prioritization.
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 ### 1. Core Capabilities (Assignment Requirements)
-- **Create Tickets**: Log issues with customer name, email, subject, description, and urgency priority. Automatically generates a human-readable identifier (e.g. `TKT-1001`) and timestamp.
-- **Ticket List View**: Clean, responsive list view displaying Ticket ID, Customer Name & Email, Subject, Priority Badge, Status Pill, and Creation Date.
+- **Create Tickets**: Log issues with customer name, email, subject, description, and priority level. Automatically generates a sequential human-readable identifier (e.g. `TKT-1001`) and timestamp.
+- **Ticket List View**: Clean, responsive table view displaying Ticket ID, Customer Name & Email, Subject, Priority Badge, Status Pill, and Creation Date.
 - **Search-as-you-type**: Instant search across Ticket IDs, customer names, emails, subjects, and descriptions.
 - **Status Filter**: Real-time filtering by status: **Open**, **In Progress**, and **Closed**.
-- **Detailed Ticket View**: Dedicated view showing full customer details, ticket description, and timestamps.
+- **Detailed Ticket View**: Dedicated view showing full customer details, ticket description, and audit timestamps.
 - **Ticket Status & Note Updates**: Change ticket status instantly and append timestamped internal notes.
 
-### 2. Standout / Bonus Features (Evaluation Strong Points)
+### 2. Standout Features
 - **Urgency & SLA Triage Matrix**:
-  - Four priority levels: **🔴 Urgent**, **🟠 High**, **🔵 Medium**, **🟢 Low** with color-coded visual badges.
-  - *Why it matters*: In a busy support desk handling hundreds of daily tickets, a strict first-in-first-out queue causes severe system outages to wait behind trivial questions. Triage by urgency is essential for customer retention and SLA adherence.
+  - Four priority levels: **Urgent**, **High**, **Medium**, **Low** with visual badge indicators.
+  - *Rationale*: In a busy support desk handling hundreds of daily tickets, a strict first-in-first-out queue causes severe system outages to wait behind trivial questions. Triage by urgency is essential for customer retention and SLA adherence.
   - *Trade-off*: We implemented an agent-assigned priority model with instant UI filtering, delivering 90% of practical triage value without the performance overhead of heavy automated escalation engines.
 - **Interactive KPI Stat Cards**:
   - High-level metric cards for **Total**, **Open**, **In Progress**, and **Closed** tickets.
@@ -25,11 +25,11 @@ A production-ready, full-stack Customer Support Management System built with the
 - **Internal Collaboration Thread**:
   - Full activity log for support agents to record debugging steps, customer phone call summaries, or escalation notes with author attribution and timestamps.
 - **One-Click Demo Data Generator**:
-  - Evaluators can click **"⚡ Load Demo Data"** to instantly populate 5 realistic support tickets representing various industries (fintech, SaaS, cloud ops).
+  - Evaluators can click **"Populate Demo Data"** to instantly populate 5 realistic support tickets representing various industries (fintech, SaaS, cloud ops).
 
 ---
 
-## 🏗️ Architecture & Tech Stack
+## Architecture & Tech Stack
 
 ```
 ┌────────────────────────────────┐
@@ -56,13 +56,13 @@ A production-ready, full-stack Customer Support Management System built with the
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | React 19, Vite, Modern CSS | Fast, reactive, zero-dependency UI |
+| **Frontend** | React 19, Vite, Enterprise CSS | Fast, reactive, zero-dependency UI |
 | **Backend** | Node.js, Express.js | REST API server with routing & validation |
 | **Database** | MongoDB Atlas, Mongoose 9 | Scalable document store with schema validation |
 
 ---
 
-## 🗄️ Database Design
+## Database Design
 
 ### Tickets Collection (`Ticket`)
 | Field | Type | Description |
@@ -89,7 +89,7 @@ A production-ready, full-stack Customer Support Management System built with the
 
 ---
 
-## 📡 REST API Reference
+## REST API Reference
 
 ### 1. Create a Ticket
 - **URL**: `POST /api/tickets`
@@ -196,7 +196,7 @@ A production-ready, full-stack Customer Support Management System built with the
 
 ---
 
-## 🚀 Getting Started Locally
+## Getting Started Locally
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -234,7 +234,7 @@ Open your browser at `http://localhost:5173`.
 
 ---
 
-## 🌐 Production Deployment Guide
+## Production Deployment Guide
 
 ### Deploying the Backend (e.g., Render.com or Railway.app)
 1. Push this repository to GitHub.
@@ -255,4 +255,4 @@ Open your browser at `http://localhost:5173`.
    - **Framework Preset**: `Vite`
 3. Add Environment Variable:
    - `VITE_API_URL`: `https://support-crm-api.onrender.com/api` (your deployed backend URL)
-4. Click **Deploy**. Your app is now live!
+4. Click **Deploy**. Your app is now live.
