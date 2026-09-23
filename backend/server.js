@@ -24,11 +24,16 @@ connectDB();
 app.use("/api/tickets", ticketRoutes);
 app.use("/tickets", ticketRoutes);
 
-// Health check endpoint
+// Health check endpoint with database diagnostics
 app.get("/health", (req, res) => {
+    const mongoose = require("mongoose");
+    const dbState = mongoose.connection.readyState;
+    const states = { 0: "disconnected", 1: "connected", 2: "connecting", 3: "disconnecting" };
+
     res.status(200).json({
         status: "ok",
-        service: "Customer Support CRM API",
+        database: states[dbState] || "unknown",
+        hasMongoUri: Boolean(process.env.MONGO_URI),
         timestamp: new Date().toISOString()
     });
 });
